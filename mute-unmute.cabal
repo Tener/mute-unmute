@@ -1,0 +1,18 @@
+Name:                mute-unmute
+Version:             0.1
+Synopsis:            Watches your screensaver and (un)mutes music when you (un)lock the screen.
+License:             GPL-3
+License-file:        LICENSE
+Author:              Krzysztof Skrzętnicki
+Maintainer:          gtener@gmail.com
+Category:            System
+Build-type:          Simple
+Cabal-version:       >=1.2
+Executable mute-unmute
+  Main-is:             mute-unmute.hs
+  Build-depends:       base >= 4 && < 5,
+                       process,
+                       monads-fd,
+                       network-dbus,
+                       filepath,
+                       directory
