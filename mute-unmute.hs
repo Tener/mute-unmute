@@ -152,11 +152,11 @@ daemon = do
             forever (threadDelay (10^6))
 
 programOpt :: [OptDescr RunMode]
-programOpt = [ Option [] ["--store"] (NoArg StoreAll) "ask for mute and unmute configurations"
-             , Option [] ["--store-mute"] (NoArg StoreMute) "ask for mute configuration"
-             , Option [] ["--store-unmute"] (NoArg StoreUnmute) "ask for unmute configuration"
-             , Option ['d'] ["--daemon"] (NoArg StoreAll) "wait for screensaver state changes"
-             , Option ['h','?'] ["--help"] (NoArg StoreAll) "show help"
+programOpt = [ Option [] ["store"] (NoArg StoreAll) "ask for mute and unmute configurations"
+             , Option [] ["store-mute"] (NoArg StoreMute) "ask for mute configuration"
+             , Option [] ["store-unmute"] (NoArg StoreUnmute) "ask for unmute configuration"
+             , Option ['d'] ["daemon"] (NoArg Daemon) "wait for screensaver state changes"
+             , Option ['h','?'] ["help"] (NoArg Help) "show help"
              ]
 
 parseOptions :: [String] -> IO RunMode
