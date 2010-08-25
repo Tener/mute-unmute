@@ -102,8 +102,8 @@ handleMessage msg@(mBody -> [var]) = debugM (show msg) >>
 handleMessage msg = errorM ("Wrong number of elements in mBody: " ++ show msg)
 
 handleLock, handleUnlock :: ConfigM ()
-handleLock = alsactl "restore" . mute =<< ask
-handleUnlock = alsactl "restore" . unmute =<< ask
+handleLock = ask >>= alsactl "restore" . mute >> infoM "Lock screen"
+handleUnlock = ask >>= alsactl "restore" . unmute >> infoM "Unlock screen"
 
 storeMute, storeUnmute :: ConfigM ()
 storeUnmute = alsactl "store" . unmute =<< ask
@@ -154,7 +154,9 @@ daemon = do
   conf <- ask
   liftIO $ do
             session <- fromJust <$> getSessionBusAddress
+            debugM ("Session: " ++ show session)
             conn <- connectToBus session
+            debugM "Connected"
             addHandler conn (Just $ clauses) (\m -> runReaderT (handleMessage m) conf)
             forever (threadDelay (10^6))
 
