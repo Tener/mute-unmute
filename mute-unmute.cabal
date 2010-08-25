@@ -13,7 +13,9 @@ Executable mute-unmute
   Main-is:             mute-unmute.hs
   Build-depends:       base >= 4 && < 5,
                        process == 1.0.1.*,
-                       monads-fd == 0.1.0.*,
+                       mtl == 1.1.0.*,
                        network-dbus == 0.0,
                        filepath == 1.1.0.*,
-                       directory == 1.0.1.*
+                       directory == 1.0.1.*,
+                       hslogger == 1.1.0,
+                       hslogger-template == 1.1.0

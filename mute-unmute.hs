@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, ViewPatterns #-}
+{-# LANGUAGE OverloadedStrings, ViewPatterns, TemplateHaskell #-}
 
 module Main where
 
@@ -22,6 +22,12 @@ import System.Directory
 import System.FilePath
 
 import Data.String
+
+import System.Log.Logger.TH
+import qualified System.Log.Logger as HSL
+
+deriveNamedLoggers "mute-unmute" "HSL" [HSL.DEBUG, HSL.INFO, HSL.ERROR, HSL.WARNING]
+-- deriveLoggers "HSL" [HSL.DEBUG, HSL.INFO, HSL.ERROR, HSL.WARNING]
 
 instance IsString DString where
     fromString str = runIdentity (mkDString str)
@@ -168,6 +174,7 @@ parseOptions args = do
 
 main :: IO ()
 main = do
+  HSL.updateGlobalLogger programName (HSL.setLevel HSL.DEBUG)
   applicationPath <- getAppUserDataDirectory programName
   m <- parseOptions =<< getArgs
 
