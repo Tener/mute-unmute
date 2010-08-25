@@ -93,12 +93,13 @@ mkConfig aPath = Config { mute = aPath </> muteConfig
 -- | message handling
 
 handleMessage :: Message -> ConfigM ()
-handleMessage msg@(mBody -> [var]) = case fromVariant var of
-                                     Nothing -> liftIO (putStrLn "Something went wrong, bad type:" >> print msg)
+handleMessage msg@(mBody -> [var]) = debugM (show msg) >>
+                                     case fromVariant var of
+                                     Nothing -> errorM ("Something went wrong, bad type:" ++ show msg)
                                      Just True -> handleLock
                                      Just False -> handleUnlock
 
-handleMessage msg = liftIO (putStrLn "Something went wrong, wrong number of elements in mBody:" >> print msg)
+handleMessage msg = errorM ("Wrong number of elements in mBody: " ++ show msg)
 
 handleLock, handleUnlock :: ConfigM ()
 handleLock = alsactl "restore" . mute =<< ask
@@ -122,7 +123,7 @@ checkAppDir = do
   app <- appPath <$> ask
   appExist <- liftIO $ doesDirectoryExist app
   when (not appExist) . liftIO $ do
-                putStrLn "Creating config directory..."
+                infoM "Creating config directory..."
                 createDirectory app
 
 checkConfig :: ConfigM ()
@@ -132,13 +133,13 @@ checkConfig = do
   mu  <- mute <$> ask
   muExist <- liftIO $ doesFileExist mu
   when (not muExist) $ do
-                liftIO $ putStrLn "Mute config is missing..."
+                infoM "Mute config is missing..."
                 askMute
 
   un  <- unmute <$> ask
   unExist <- liftIO $ doesFileExist un
   when (not unExist) $ do
-                liftIO $ putStrLn "Unmute config is missing..."
+                infoM "Unmute config is missing..."
                 askUnmute
 
 daemon :: ConfigM ()
