@@ -1,0 +1,5 @@
+This simple program will watch for the activation of screensaver in via it's DBus API. Current version works for Gnome (tested on: 2.30.0) and KDE (tested on: 4.5.0). Additionally it will only work for ALSA (usage of alsactl command), but this be simple to fix if needed.
+
+You can install it with cabal-install program, available in Haskell Platform release: http://hackage.haskell.org/platform/
+
+You can also get a released version from Hackage: http://hackage.haskell.org/package/mute-unmute
