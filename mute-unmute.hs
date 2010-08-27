@@ -145,20 +145,33 @@ checkConfig = do
 daemon :: ConfigM ()
 daemon = do
   checkConfig
-  path <- mkObjectPath "/org/gnome/ScreenSaver"
-  let clauses = [ MatchType Signal
+
+  -- Gnome
+  pathG <- mkObjectPath "/org/gnome/ScreenSaver"
+  let clausesG = [ MatchType Signal
                 , MatchInterface "org.gnome.ScreenSaver"
                 , MatchMember "ActiveChanged"
-                , MatchPath path]
+                , MatchPath pathG]
+
+  -- KDE
+  pathK <- mkObjectPath "/ScreenSaver"
+  let clausesK = [ MatchType Signal
+                , MatchInterface "org.freedesktop.ScreenSaver"
+                , MatchMember "ActiveChanged"
+                , MatchPath pathK]
+
+
+  session <- fromJust <$> liftIO getSessionBusAddress
+  debugM ("Session: " ++ show session)
+  conn <- liftIO $ connectToBus session
+  debugM "Connected"
 
   conf <- ask
-  liftIO $ do
-            session <- fromJust <$> getSessionBusAddress
-            debugM ("Session: " ++ show session)
-            conn <- connectToBus session
-            debugM "Connected"
+  liftIO $ forM_ [clausesG, clausesK] $ \ clauses -> do
             addHandler conn (Just $ clauses) (\m -> runReaderT (handleMessage m) conf)
-            forever (threadDelay (10^6))
+            debugM ("Handler added: " ++ show clauses)
+
+  liftIO $ forever (threadDelay (10^6))
 
 programOpt :: [OptDescr RunMode]
 programOpt = [ Option [] ["store"] (NoArg StoreAll) "ask for mute and unmute configurations"
