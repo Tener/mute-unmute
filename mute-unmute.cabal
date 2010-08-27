@@ -21,3 +21,7 @@ Executable mute-unmute
                        directory == 1.0.1.*,
                        hslogger == 1.1.0,
                        hslogger-template == 1.1.0
+
+source-repository head
+  type:     git
+  location: git://github.com/Tener/mute-unmute.git
